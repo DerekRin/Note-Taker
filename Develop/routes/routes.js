@@ -3,14 +3,15 @@ const path = require("path");
 const fs = require("fs");
 
 router.get("/api/notes", (req, res) => {
+  console.log("get");
   fs.readFile("./db/db.json", "utf8", function (err, data) {
+    console.log(JSON.parse(data));
     res.json(JSON.parse(data));
   });
 });
 
 router.post("/api/notes", (req, res) => {
   // set id based on what the next index of the array will be
-  console.log(req.body);
   fs.readFile("./db/db.json", "utf8", function (err, data) {
     const posting = JSON.parse(data);
     posting.push(req.body);
@@ -18,10 +19,12 @@ router.post("/api/notes", (req, res) => {
     fs.writeFile("./db/db.json", JSON.stringify(posting), function (err, res) {
       if (err) {
         console.log("Failure", err);
+        return res.json(err);
       } else {
         console.log("Success");
       }
     });
+    res.json(posting);
   });
 
   //   if (!validateAnimal(req.body)) {
